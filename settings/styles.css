@@ -644,3 +644,39 @@ a:active {
 .form-switch input:checked + i::before { transform: translate3d(18px, 2px, 0) scale3d(0, 0, 0); }
 
 .form-switch input:checked + i::after { transform: translate3d(22px, 2px, 0); }
+
+
+.single-temp {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.current-temp {
+    font-weight: bold;
+    font-size: 20px;
+    height: 70px;
+    vertical-align: middle;
+}
+.target-temp {
+    font-size: 15px;
+    position: absolute;
+    bottom: 23px;
+    right: 7px;
+}
+
+.rangeslider {
+    margin: 20px 0;
+}
+.rangeslider__fill {
+    background-color: #4BD763 !important;
+}
+.rangeslider--horizontal {
+    height:10px !important;
+}
+
+.rangeslider--horizontal .rangeslider__handle {
+    top:-11px !important;
+    width:30px;
+    height:30px;
+    /*transform: scale(0.75, 0.75);*/
+}

@@ -2,6 +2,7 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" type="text/css" href="rangeslider.css" />
     
     <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
     <script type="text/javascript" src="/manager/webserver/assets/js/jquery.js"></script>
@@ -11,6 +12,7 @@
 
     <script type="text/javascript" src="vue.min.js" data-origin="settings"></script>
     <script type="text/javascript" src="settings.js" data-origin="settings"></script>
+    <script type="text/javascript" src="rangeslider.js" data-origin="settings"></script>
 </head>
 <body>
     <div id="app">
@@ -43,9 +45,21 @@
                             <div class="rTableCell line scrollable-text">
                                 {{ getZone(device) }}<br />
                                 <b>{{device.name}}</b>
+                                <div class="slider" v-if="device.capabilitiesObj.target_temperature">
+                                    <input v-bind:id="'range_'+device.id"
+                                           type="range" 
+                                           v-bind:min="device.capabilitiesObj.target_temperature.min" 
+                                           v-bind:max="device.capabilitiesObj.target_temperature.max || 40" 
+                                           v-bind:step="device.capabilitiesObj.target_temperature.step || 0.1"
+                                           v-bind:value="device.capabilitiesObj.target_temperature.value" v-bind:data-id="device.id" />
+                                </div>
                             </div>
-                            <div class="rTableCell line settings-item-last">
-                                <span v-html="getTemperatures(device.capabilitiesObj)"></span>
+                            <div v-if="!device.capabilitiesObj.target_temperature" class="rTableCell line settings-item-last">
+                                <div class="single-temp" v-html="getTemperature(device.capabilitiesObj.measure_temperature)"></div>
+                            </div>
+                            <div v-if="device.capabilitiesObj.target_temperature" class="rTableCell line settings-item-last" v-if="device.capabilitiesObj.target_temperature">
+                                <div class="current-temp" v-html="getTemperature(device.capabilitiesObj.measure_temperature)"></div>
+                                <div class="target-temp" v-bind:id="'target_'+ device.id" v-html="getTemperature(device.capabilitiesObj.target_temperature)"></div>
                             </div>
                         </div>
                     </div>

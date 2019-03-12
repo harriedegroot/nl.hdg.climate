@@ -76,5 +76,27 @@ module.exports = [
                 callback(null, []);
             }
         }
+    },
+    {
+        description: 'Set target value',
+        method: 'POST',
+        path: '/value',
+        role: 'owner',
+        requires_authorization: true,
+        fn: function (args, callback) {
+            Log.debug(args);
+            if (Homey && Homey.app) {
+                let deviceId = args.body.device;
+                let value = args.body.target;
+                Homey.app.setTargetValue(deviceId, value)
+                    .then(() => callback(null, value))
+                    .catch(error => {
+                        Log.error(error);
+                        callback('Failed to update target temperature');
+                    });
+            } else {
+                callback("App not yet initialized", value);
+            }
+        }
     }
 ];

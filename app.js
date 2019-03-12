@@ -44,6 +44,17 @@ class TemperatureMonitor extends Homey.App {
         //this.settings = Homey.ManagerSettings.get('settings') || {};
         //Log.debug(this.settings);
     }
+
+    async setTargetValue(deviceId, value) {
+        const state = {
+            deviceId: deviceId,
+            capabilityId: 'target_temperature',
+            value: Number(value)
+        };
+        Log.debug("set target temperature: " + JSON.stringify(state));
+        const api = await this.getApi();
+        await api.devices.setCapabilityValue(state);
+    }
 }
 
 module.exports = TemperatureMonitor;

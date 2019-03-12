@@ -5,6 +5,7 @@ var temperatureSettings = {};
 const defaultSettings = {
 };
 
+//////////////////////////  DEBUG  //////////////////////////////////////
 //const testDevices = {
 //    test: {
 //        id: 'test', name: "test some long named device lkfjdh sdlkfjhgsldkfhg lksdjfhslkdh ", zone: "zone", iconObj: {
@@ -12,12 +13,50 @@ const defaultSettings = {
 //        },
 //        capabilitiesObj: {
 //            measure_temperature: {
-//                value: 22
+//                value: 18.5,
+//                setable: false
+//            },
+//            target_temperature: {
+//                value: 21.3,
+//                setable: true,
+//                min: 4,
+//                max: 35,
+//                step: 0.5,
+//                units: 'C'
 //            }
 //        }
 //    },
-//    test1: { id: 'test', name: "device 1", zone: "zone" },
-//    test2: { id: 'test', name: "device 2", zone: "zone" },
+//    test1: {
+//        id: 'test1', name: "device 1", zone: "zone 2", iconObj: {
+//            url: "../assets/icon.svg"
+//        },
+//        capabilitiesObj: {
+//            measure_temperature: {
+//                value: 77,
+//                setable: false,
+//                units: 'F'
+//            },
+//            target_temperature: {
+//                value: 55,
+//                setable: true,
+//                min: -10,
+//                max: 90,
+//                step: 1,
+//                units: 'F'
+//            }
+//        }
+//    },
+//    test2: {
+//        id: 'test2', name: "device 2", zone: "zone 2", iconObj: {
+//            url: "../assets/icon.svg"
+//        },
+//        capabilitiesObj: {
+//            measure_temperature: {
+//                value: 21.5,
+//                setable: false
+//            }
+//        }
+//    },
 //    test3: { id: 'test', name: "device 3", zone: "zone" },
 //    test4: { id: 'test', name: "device 4", zone: "zone" },
 //    test5: { id: 'test', name: "device 5", zone: "zone" },
@@ -34,7 +73,7 @@ const defaultSettings = {
 //        api: (method, url, _, callback) => {
 //            switch (url) {
 //                case '/devices':
-//                    return setTimeout(() => callback(null, testDevices), 2000);
+//                    return setTimeout(() => callback(null, testDevices), 1000);
 //                case '/zones':
 //                    return callback(null, { zone: { name: 'zone' } });
 //                default:
@@ -46,6 +85,7 @@ const defaultSettings = {
 //        alert: () => alert(...arguments)
 //    })
 //});
+////////////////////////////////////////////////////////////////
 
 function onHomeyReady(homeyReady){
     Homey = homeyReady;
@@ -79,7 +119,7 @@ function onHomeyReady(homeyReady){
     //showTab(1);
     getLanguage();
 
-    new Vue({
+    $app = new Vue({
         el: '#app',
         data: {
             devices: null,
@@ -109,6 +149,8 @@ function onHomeyReady(homeyReady){
                         : [];
 
                     document.getElementById('devices-list').style.display = 'block';
+                    
+                    this.$nextTick(() => this.updateSliders());
                 });
             },
             getZone: function (device) {
@@ -123,26 +165,63 @@ function onHomeyReady(homeyReady){
                     return "<!-- no device.iconObj.url -->";
                 }
             },
-            getTemperatures: function (capabilitiesObj) {
-                // console.log(capabilitiesObj.measure_temperature);
-                // console.log(capabilitiesObj.measure_temperature.value);
+            getTemperature: function (capability) {
                 try {
-                    let value = capabilitiesObj.measure_temperature.value;
+                    let value = capability.value;
 
                     if ("number" !== typeof value)
                         value = "-";
                     else
-                        value += " &#8451;";
+                        value += ' ' + this.getUnit(capability);
                             
                     return value; //"<span class=\"component component-temperature>" + value + "</span>";
                 } catch (e) {
                     return "<!-- no capabilitiesObj.temparature_.value -->";
                 }
+            },
+            getUnit(capability) {
+                return capability.units && typeof capability.units === 'string'
+                    ? capability.units
+                    : "&#8451;";
+            },
+            updateSliders() {
+                let sliders = $('input[type="range"]');
+                let self = this;
+                sliders.rangeslider({
+                    polyfill: false,
+                    onSlide: function (position, value) {
+                        try {
+                            let id = this.$element.data().id;
+                            let device = self.devices.find(d => d.id === id);
+                            let unit = self.getUnit(device.capabilitiesObj.target_temperature);
+                            $('#target_' + id).html(value + " " + unit);
+
+                        } catch{
+                            // nothing
+                        }
+
+                    },
+                    onSlideEnd: function (position, value) {
+                        try {
+                            return Homey.api('POST', '/value', {
+                                device: this.$element.data().id,
+                                target: value
+                            }, (err, result) => {
+                                if (err) return Homey.alert(err);
+                            });
+                        } catch {
+                            Homey.alert('Failed to update target value');
+                        }
+                    }
+                });
             }
         },
         async mounted() {
             await this.getZones();
             await this.getDevices();
+
+            // update every xx seconds
+            setInterval(() => this.getDevices(), 5000);
         },
         computed: {
             devices() {
@@ -151,11 +230,14 @@ function onHomeyReady(homeyReady){
             zones() {
                 return this.zones;
             }
-        }
+        },
+        //updated: function () {
+        //    updateSliders();
+        //}
     });
-
-    
 }
+
+
 
 function showTab(tab){
     $('.tab').removeClass('tab-active');
