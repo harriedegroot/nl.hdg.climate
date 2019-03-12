@@ -1,7 +1,7 @@
 {
-  "name": "nl.hdg.mqtt",
-  "version": "1.0.3",
-  "description": "Battery monitor",
+  "name": "nl.hdg.climate",
+  "version": "2.0.0",
+  "description": "Temperature monitor",
   "author": {
     "name": "Harrie de Groot"
   },

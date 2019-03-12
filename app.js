@@ -6,7 +6,7 @@ const { HomeyAPI } = require('athom-api');
 // Services
 const Log = require("./Log.js");
 
-class BatteryMonitor extends Homey.App {
+class TemperatureMonitor extends Homey.App {
 
     async getApi() {
         if (!this._api) {
@@ -46,4 +46,4 @@ class BatteryMonitor extends Homey.App {
     }
 }
 
-module.exports = BatteryMonitor;
+module.exports = TemperatureMonitor;

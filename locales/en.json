@@ -1,6 +1,6 @@
 {
   "settings": {
-    "benefit": "Monitor the temperature of all your devices"
+    "benefit": "Monitor the temperature readings of all your devices"
   },
   "devices": {
     "flowcard": "Flowcard"

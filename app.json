@@ -1,6 +1,6 @@
 {
-  "id": "nl.hdg.temperature",
-  "version": "0.0.1",
+  "id": "nl.hdg.climate",
+  "version": "2.0.0",
   "compatibility": ">=2.0.0",
   "sdk": 2,
   "name": {
@@ -8,8 +8,8 @@
     "nl": "Temperatuur monitor"
   },
   "description": {
-    "en": "Keep track of the temperature values of your devices",
-    "nl": "Houd de temperatuur van al je apparaten in de gaten"
+    "en": "Keep track of the temperature readings of your devices",
+    "nl": "Houd de temperatuurmetingen van al je apparaten in de gaten"
   },
   "category": [
     "tools"
