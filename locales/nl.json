@@ -1,0 +1,19 @@
+{
+  "settings": {
+    "benefit": "Bekijk de temperatuur van al je apparaten"
+  },
+  "devices": {
+    "flowcard": "Flowcard"
+  },
+  "tab1": {
+    "title": "Apparaten",
+    "devices": {
+      "devices": "Apparaten",
+      "zone": "Zone",
+      "device": "Apparaat"
+    }
+  },
+  "tab2": {
+    "title": "Log"
+  }
+}

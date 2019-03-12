@@ -1,0 +1,44 @@
+{
+  "id": "nl.hdg.temperature",
+  "version": "0.0.1",
+  "compatibility": ">=2.0.0",
+  "sdk": 2,
+  "name": {
+    "en": "Temperature monitor",
+    "nl": "Temperatuur monitor"
+  },
+  "description": {
+    "en": "Keep track of the temperature values of your devices",
+    "nl": "Houd de temperatuur van al je apparaten in de gaten"
+  },
+  "category": [
+    "tools"
+  ],
+  "permissions": [ "homey:manager:api"],
+  "images": {
+    "large": "/assets/images/large.jpg",
+    "small": "/assets/images/small.jpg"
+  },
+  "author": {
+    "name": "Harrie de Groot",
+    "email": "harriedegroot@gmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Harrie de Groot",
+        "email": "harriedegroot@gmail.com"
+      }
+    ]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "harriedegroot"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/harriedegroot/nl.hdg.climate/issues"
+  }
+}

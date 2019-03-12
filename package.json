@@ -1,0 +1,12 @@
+{
+  "name": "nl.hdg.mqtt",
+  "version": "1.0.3",
+  "description": "Battery monitor",
+  "author": {
+    "name": "Harrie de Groot"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "athom-api": "2.1.172"
+  }
+}

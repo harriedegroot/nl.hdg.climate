@@ -1,0 +1,19 @@
+{
+  "settings": {
+    "benefit": "Monitor the temperature of all your devices"
+  },
+  "devices": {
+    "flowcard": "Flowcard"
+  },
+  "tab1": {
+    "title": "Devices",
+    "devices": {
+      "devices": "Devices",
+      "zone": "Zone",
+      "device": "Device"
+    }
+  },
+  "tab2": {
+    "title": "Log"
+  }
+}
