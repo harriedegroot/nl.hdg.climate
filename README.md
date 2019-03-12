@@ -10,13 +10,12 @@ Just adds an app settings page with all devices and their temperature readings.
 
 It's Homey 2.0 only...
 
-## Future  
-- Live update values
-- Adjust target temperature
-- Display unit specified in capability
-- etc.
-
 ## Change Log  
+  
+#### 2.0.1  
+- Set target value  
+- Live updates  
+- Read units from capability info
   
 #### 2.0.0
 - Initial version  
