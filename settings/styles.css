@@ -737,3 +737,7 @@ a:active {
 #clear-search-icon {
     fill: rgb(109,109,113);
 }
+
+.zone-mean {
+    font-weight: normal;
+}

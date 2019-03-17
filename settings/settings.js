@@ -45,6 +45,14 @@ function sortByName(a, b) {
     return name1 < name2 ? -1 : name1 > name2 ? 1 : 0;
 }
 
+function mean(numbers) {
+    var total = 0, i;
+    for (i = 0; i < numbers.length; i += 1) {
+        total += numbers[i];
+    }
+    return total / numbers.length;
+}
+
 function onHomeyReady(homeyReady){
     Homey = homeyReady;
     
@@ -112,7 +120,10 @@ function onHomeyReady(homeyReady){
                 return Homey.api('GET', '/devices', null, (err, result) => {
                     try {
                         loading = false;
-                        if (err) return Homey.alert(err);
+                        if (err) {
+                            //return Homey.alert(err);
+                            return; // skip
+                        }
 
                         const devices = Object.keys(result || {})
                             .map(key => result[key])
@@ -139,6 +150,18 @@ function onHomeyReady(homeyReady){
             },
             updateValues(devices) {
                 devices = this.applyFilter(devices);
+
+                for (let zone of this.zonesList) {
+                    const measurements = this.getDevicesForZone(zone.id)
+                        .filter(d => d.capabilitiesObj && d.capabilitiesObj.measure_temperature)
+                        .filter(d => d.capabilitiesObj.measure_temperature.units === '°C') // NOTE: Mean for celcius only (for now...)
+                        .map(d => Number(d.capabilitiesObj.measure_temperature.value))
+                        .filter(m => m !== 0);  // NOTE: skips 0 values (= invalid reading)
+
+                    if (measurements.length) {
+                        $('#mean_' + zone.id).html(mean(measurements).toFixed(1) + ' °C');
+                    }
+                }
 
                 for (let device of devices) {
                     try {
