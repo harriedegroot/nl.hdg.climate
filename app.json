@@ -12,6 +12,8 @@
     "nl": "Houd de temperatuurmetingen van al je apparaten in de gaten"
   },
   "category": [
+    "climate",
+    "appliances",
     "tools"
   ],
   "permissions": [ "homey:manager:api"],
