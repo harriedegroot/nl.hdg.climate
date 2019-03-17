@@ -53,6 +53,13 @@ function mean(numbers) {
     return total / numbers.length;
 }
 
+function groupBy(xs, key) {
+    return xs.reduce(function (rv, x) {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+    }, {});
+};
+
 function onHomeyReady(homeyReady){
     Homey = homeyReady;
     
@@ -154,12 +161,21 @@ function onHomeyReady(homeyReady){
                 for (let zone of this.zonesList) {
                     const measurements = this.getDevicesForZone(zone.id)
                         .filter(d => d.capabilitiesObj && d.capabilitiesObj.measure_temperature)
-                        .filter(d => d.capabilitiesObj.measure_temperature.units === '°C') // NOTE: Mean for celcius only (for now...)
-                        .map(d => Number(d.capabilitiesObj.measure_temperature.value))
-                        .filter(m => m !== 0);  // NOTE: skips 0 values (= invalid reading)
+                        .map(d => {
+                            return {
+                                value: Number(d.capabilitiesObj.measure_temperature.value),
+                                units: d.capabilitiesObj.measure_temperature.units
+                            };
+                        })
+                        .filter(m => m.units && m.value !== 0);  // NOTE: skips 0 values (= invalid reading)
 
                     if (measurements.length) {
-                        $('#mean_' + zone.id).html(mean(measurements).toFixed(1) + ' °C');
+                        let totals = groupBy(measurements, 'units');
+                        means = Object.keys(totals).map(units => {
+                            const values = totals[units].map(m => m.value);
+                            return mean(values).toFixed(1).replace(/\.0$/, '') + ' ' + units;
+                        });
+                        $('#mean_' + zone.id).html(means.join(' / '));
                     }
                 }
 
