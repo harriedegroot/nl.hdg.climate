@@ -646,41 +646,40 @@ a:active {
 .form-switch input:checked + i::after { transform: translate3d(22px, 2px, 0); }
 
 
+#devices-list .rTableCell,
+#devices-list .rTableCellLast {
+    padding: 11px 6px;
+}
+
 .single-temp {
     font-weight: bold;
-    font-size: 20px;
 }
 
 .current-temp {
     font-weight: bold;
-    font-size: 20px;
-    height: 70px;
     vertical-align: middle;
 }
 .target-temp {
     font-size: 15px;
-    position: absolute;
-    bottom: 23px;
-    right: 7px;
+    margin-top: 15px;
 }
 
 .rangeslider {
-    margin: 20px 0;
+    margin: 20px 0 5px 0;
 }
 .rangeslider__fill {
     background-color: #4BD763 !important;
 }
 .rangeslider--horizontal {
-    height:10px !important;
+    height: 10px !important;
+    max-width:calc(100vw - 160px) !important;
 }
 
 .rangeslider--horizontal .rangeslider__handle {
     top:-11px !important;
     width:30px;
     height:30px;
-    /*transform: scale(0.75, 0.75);*/
 }
-
 
 .settings-item-last.dim {
     vertical-align: bottom;
@@ -691,33 +690,27 @@ a:active {
     position: relative;
     text-align: left !important;
     padding: 0 10px !important;
-    /*padding-left: 10px;*/
     height: 45px !important;
 }
 
-    .zone-header .rTableCell {
-        /*padding: 0 6px;*/
-    }
+.zone-header .rTableCell {
+}
 
 .zone-name {
     position: absolute;
     margin: 8px;
-    /*padding-left: 10px !important;*/
+    padding: 6px !important;
 }
 
 .zone-slider {
     margin: 0 10px;
 }
 
-    .zone-slider .rangeslider {
-        float: right;
-        /*max-width: 200px;*/
-    }
+.zone-slider .rangeslider {
+    float: right;
+}
 
 .zone-switch {
-    /*position: absolute;
-    right: 5px;
-    bottom: 5px;*/
 }
 
 .stretch {
