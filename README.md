@@ -12,6 +12,9 @@ It's Homey 2.0 only...
 
 ## Change Log  
   
+#### 2.0.3  
+- Added mean zone temperature calculation     
+    
 #### 2.0.2  
 - Added search  
 - Grouped devices by zone/room
