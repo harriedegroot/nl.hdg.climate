@@ -12,6 +12,9 @@ It's Homey 2.0 only...
 
 ## Change Log  
   
+#### 2.0.4  
+- Added custom device temperatures  
+  
 #### 2.0.3  
 - Added mean zone temperature calculation  
 - Styling
