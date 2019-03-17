@@ -50,20 +50,23 @@ function writelog(level, line, notification, functions, implementation) {
 
    switch(level) {
        case 'error':
-           if (notification !== false) {
-               Homey.ManagerNotifications.registerNotification({
-                   excerpt: line
-               }, function (err, notification) {
-                   if (DEBUG) console.log('Notification added');
-                   if (line) return console.error(line);
-               });
+
+           const message = typeof line === 'object' ? (line.error_description || line.error || line) : line;
+
+           if (notification === true && message && typeof message === 'string') {
+                Homey.ManagerNotifications.registerNotification({
+                    excerpt: message
+                }, function (err, notification) {
+                    if (DEBUG) console.log('Notification added');
+                    if (line) return console.error(line);
+                });
            } else {
                if (line) return console.error(line);
            }
            break;
        case 'debug':
-           if (!DEBUG) break;
            if (typeof line === 'object') {
+               if (!DEBUG) break;
                let obj = line;
                if (!obj) {
                    this.writelog('info', 'object: UNDEFINED');
@@ -85,33 +88,53 @@ function writelog(level, line, notification, functions, implementation) {
          var logLine = getDateTime() + "   " + line;
          console.log( logLine );
 
-         if (logArray.length >= 50) {
-            logArray.shift();
+         if (logArray.length >= 100) {
+            logArray.pop();
          }
-         logArray.push(logLine);
+         logArray.unshift(logLine);
          break;
    }
 }
 
 function getLogLines() {
-   writelog('debug', "getLogLines called");
    return logArray;
 }
 
+function clearLogLines() {
+    logArray.length = 0;
+}
+
 module.exports = {
+    LEVELS: ['off', 'error', 'warning', 'info', 'debug'],
+    level: DEBUG ? 4 : 3,
+    getLevel: function () {
+        return this.LEVELS[this.level];
+    },
+    setLevel: function (level) {
+        if (level !== undefined) {
+            this.level = typeof level === 'string' ? this.LEVELS.indexOf(level) : level;
+            if (level === 0) {
+                clearLogLines();
+            }
+        }
+    },
     debug: function (line, functions, implementation) {
-        writelog('debug', line, null, functions, implementation);
+        if(this.level >= 4) writelog('debug', line, null, functions, implementation);
     },
     info: function (line) {
-        writelog('info', line);
+        if (this.level >= 3) writelog('info', line);
     },
+    // wraning...
     error: function (line, notification) {
-        writelog('error', line, notification);
+        if (this.level >= 1) writelog('error', line, notification);
     },
     writelog: function (level, line) {
         writelog(level, line);
     },
     getLogLines: function () {
         return getLogLines();
+    },
+    clearLogLines: function () {
+        clearLogLines();
     }
 };
