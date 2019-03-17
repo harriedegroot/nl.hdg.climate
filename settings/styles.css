@@ -745,3 +745,7 @@ a:active {
 .additional-names {
     margin: 20px 0 !important;
 }
+
+.additional-temp {
+    font-size: 15px;
+}
