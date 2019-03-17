@@ -1,2 +1,0 @@
-D:\Projects\Homey\nl.hdg.battery\obj\Debug\Battery Monitor.njsproj.CoreCompileInputs.cache
-D:\Projects\Homey\nl.hdg.battery\bin\Microsoft.NodejsTools.WebRole.dll
