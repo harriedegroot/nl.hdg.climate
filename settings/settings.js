@@ -250,10 +250,12 @@ function onHomeyReady(homeyReady){
                     },
                     onSlideEnd: function (position, value) {
                         try {
+                            self.clearRefreshInterval();
                             return Homey.api('POST', '/value', {
                                 device: this.$element.data().id,
                                 target: value
                             }, (err, result) => {
+                                self.setRefreshInterval();
                                 if (err) return Homey.alert(err);
                             });
                         } catch {
