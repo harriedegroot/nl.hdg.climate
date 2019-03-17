@@ -7,10 +7,10 @@
     <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
     <script type="text/javascript" src="/manager/webserver/assets/js/jquery.js"></script>
 
-    <!--<script type="text/javascript" src="test-devices.js"></script>
+    <script type="text/javascript" src="test-devices.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"></script>-->
+            crossorigin="anonymous"></script>
 
     <script type="text/javascript" src="vue.min.js" data-origin="settings"></script>
     <script type="text/javascript" src="settings.js" data-origin="settings"></script>
@@ -73,47 +73,26 @@
                                            v-bind:value="device.capabilitiesObj.target_temperature.value"
                                            v-bind:data-id="device.id" />
                                 </div>
-                            </div>
-                            <div v-if="!device.capabilitiesObj.target_temperature" class="rTableCell line settings-item-last">
-                                <div v-bind:id="'measure_'+ device.id" class="single-temp" v-html="getTemperature(device.capabilitiesObj.measure_temperature)"></div>
-                            </div>
-                            <div v-if="device.capabilitiesObj.target_temperature" class="rTableCell line settings-item-last" v-if="device.capabilitiesObj.target_temperature">
-                                <div class="current-temp" v-bind:id="'measure_'+ device.id" v-html="getTemperature(device.capabilitiesObj.measure_temperature)"></div>
-                                <div class="target-temp" v-bind:id="'target_'+ device.id" v-html="getTemperature(device.capabilitiesObj.target_temperature)"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!--<div id="devices-list" style="display: none;">
-                    <div class="rTable" >
-                        <div class="rTableRow devices" v-for="device in devices">
-                            <div class="rTableCell line">
-                                <div class="icon-cell" v-html="getIcon(device)"></div>
-                            </div>
-                            <div class="rTableCell line scrollable-text">
-                                {{ getZone(device) }}<br />
-                                <b>{{device.name}}</b>
-                                <div class="slider" v-if="device.capabilitiesObj.target_temperature">
-                                    <input v-bind:id="'range_'+device.id"
-                                           type="range"
-                                           v-bind:min="device.capabilitiesObj.target_temperature.min"
-                                           v-bind:max="device.capabilitiesObj.target_temperature.max || 40"
-                                           v-bind:step="device.capabilitiesObj.target_temperature.step || 0.1"
-                                           v-bind:value="device.capabilitiesObj.target_temperature.value" v-bind:data-id="device.id" />
+                                <div class="additional-names" v-for="capability in getAdditionalTemperatures(device)">
+                                    {{capability.title}}
                                 </div>
                             </div>
-                            <div v-if="!device.capabilitiesObj.target_temperature" class="rTableCell line settings-item-last">
-                                <div class="single-temp" v-html="getTemperature(device.capabilitiesObj.measure_temperature)"></div>
+                            <div  class="rTableCell line settings-item-last">
+                                <div v-if="!device.capabilitiesObj.target_temperature" v-bind:id="'measure_'+ device.id" class="single-temp" v-html="getTemperature(device.capabilitiesObj.measure_temperature)"></div>
+                                <div v-if="device.capabilitiesObj.target_temperature" class="current-temp" v-bind:id="'measure_'+ device.id" v-html="getTemperature(device.capabilitiesObj.measure_temperature)"></div>
+                                <div v-if="device.capabilitiesObj.target_temperature" class="target-temp" v-bind:id="'target_'+ device.id" v-html="getTemperature(device.capabilitiesObj.target_temperature)"></div>
+
+                                <div class="additional-names" v-for="capability in getAdditionalTemperatures(device)">
+                                    <div class="additional-temp" v-bind:id="capability.id + device.id" v-html="getTemperature(capability)"></div>
+                                </div>
                             </div>
-                            <div v-if="device.capabilitiesObj.target_temperature" class="rTableCell line settings-item-last" v-if="device.capabilitiesObj.target_temperature">
-                                <div class="current-temp" v-html="getTemperature(device.capabilitiesObj.measure_temperature)"></div>
-                                <div class="target-temp" v-bind:id="'target_'+ device.id" v-html="getTemperature(device.capabilitiesObj.target_temperature)"></div>
-                            </div>
+
+                            
                         </div>
+
                     </div>
                 </div>
-            </div>-->
             </div>
 
 

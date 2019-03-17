@@ -665,7 +665,7 @@ a:active {
 }
 
 .rangeslider {
-    margin: 20px 0 7px 0;
+    margin: 20px 0 10px 0;
 }
 .rangeslider__fill {
     background-color: #4BD763 !important;
@@ -740,4 +740,8 @@ a:active {
 
 .zone-mean {
     font-weight: normal;
+}
+
+.additional-names {
+    margin: 20px 0 !important;
 }

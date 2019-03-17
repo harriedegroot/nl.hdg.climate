@@ -280,6 +280,11 @@ function onHomeyReady(homeyReady){
             },
             getDevicesForZone(zoneId) {
                 return this.devices ? this.devices.filter(d => d.zone === zoneId) : [];
+            },
+            getAdditionalTemperatures(device) {
+                return Object.keys(device.capabilitiesObj)
+                    .filter(key => key.indexOf('measure_temperature.') === 0)
+                    .map(key => device.capabilitiesObj[key]);
             }
         },
         async mounted() {
