@@ -3,10 +3,12 @@
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <link rel="stylesheet" type="text/css" href="rangeslider.css" />
-    
+
     <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
     <script type="text/javascript" src="/manager/webserver/assets/js/jquery.js"></script>
-    <!--<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+
+    <!--<script type="text/javascript" src="test-devices.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous"></script>-->
 
@@ -16,7 +18,15 @@
 </head>
 <body>
     <div id="app">
-        <p data-i18n="settings.benefit" class="benefit">Monitor the temperature readings of all your devices</p>
+        <!--<p data-i18n="settings.benefit" class="benefit">Monitor the temperature readings of all your devices</p>-->
+        <div class="app-header" style="display:none">
+            <input type="text" id="search" @keyup="filter()" data-i18n="[placeholder]tab1.search" placeholder="Search..">
+            <div id="clear-search" v-if="search" @click="clearFilter()">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
+                    <g><path id="clear-search-icon" d="M500,990C229.4,990,10,770.6,10,500C10,229.4,229.4,10,500,10c270.6,0,490,219.4,490,490C990,770.6,770.6,990,500,990L500,990z M500,71.3C263.2,71.3,71.3,263.2,71.3,500c0,236.8,191.9,428.7,428.7,428.7c236.8,0,428.7-191.9,428.7-428.7C928.8,263.2,736.8,71.3,500,71.3L500,71.3z M543.5,500.2l129.8,129.8c12,12,12,31.3,0,43.3c-12,12-31.4,12-43.3,0L500.2,543.5L369.5,674.1c-12,12.1-31.6,12.1-43.6,0c-12-12-12-31.6,0-43.6l130.6-130.6L326.8,370.1c-12-12-12-31.3,0-43.3c12-12,31.3-12,43.3,0l129.8,129.7l131.6-131.6c12-12,31.6-12,43.6,0c12.1,12.1,12.1,31.6,0,43.7L543.5,500.2L543.5,500.2z" /></g>
+                </svg>
+            </div>
+        </div>
 
         <div class="rTable tabs" style="display:none">
             <div class="rTableRow">
@@ -29,14 +39,53 @@
             <div id="tab1" class="panel">
                 <div class="loader" v-if="loading">
                     <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-                    <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946 s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634 c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z" />
-
-                    <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0 C22.32,8.481,24.301,9.057,26.013,10.047z">
-                    <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite" />
-
-                    </path>
+                        <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946 s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634 c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z" />
+                        <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0 C22.32,8.481,24.301,9.057,26.013,10.047z">
+                            <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite" />
+                        </path>
+                    </svg>
                 </div>
-                <div id="devices-list" style="display: none;">
+
+                <div id="devices-list" class="rTable" style="display: none;">
+
+                    <div class="zone" v-for="zone in zonesList">
+                        <div class="rTableRow zone-header text-header">
+                            <span class="rTableCell zone-name">{{zone.name}}</span>
+                            <span class="rTableCell zone-slider slider stretch" v-if="true || hasBrightness(zone)">
+                            </span>
+                            <div v-bind:id="'mean_'+ zone.id" class="rTableCell zone-switch settings-item-last">
+                                
+                            </div>
+                        </div>
+
+                        <div class="rTableRow devices" v-for="device in getDevicesForZone(zone.id)">
+                            <div class="rTableCell line">
+                                <div class="icon-cell" v-html="getIcon(device)"></div>
+                            </div>
+                            <div class="rTableCell line scrollable-text">
+                                <b>{{device.name}}</b>
+                                <div class="slider" v-if="device.capabilitiesObj.target_temperature">
+                                    <input v-bind:id="'range_'+device.id"
+                                           type="range"
+                                           v-bind:min="device.capabilitiesObj.target_temperature.min"
+                                           v-bind:max="device.capabilitiesObj.target_temperature.max || 40"
+                                           v-bind:step="device.capabilitiesObj.target_temperature.step || 0.1"
+                                           v-bind:value="device.capabilitiesObj.target_temperature.value"
+                                           v-bind:data-id="device.id" />
+                                </div>
+                            </div>
+                            <div v-if="!device.capabilitiesObj.target_temperature" class="rTableCell line settings-item-last">
+                                <div v-bind:id="'measure_'+ device.id" class="single-temp" v-html="getTemperature(device.capabilitiesObj.measure_temperature)"></div>
+                            </div>
+                            <div v-if="device.capabilitiesObj.target_temperature" class="rTableCell line settings-item-last" v-if="device.capabilitiesObj.target_temperature">
+                                <div class="current-temp" v-bind:id="'measure_'+ device.id" v-html="getTemperature(device.capabilitiesObj.measure_temperature)"></div>
+                                <div class="target-temp" v-bind:id="'target_'+ device.id" v-html="getTemperature(device.capabilitiesObj.target_temperature)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<div id="devices-list" style="display: none;">
                     <div class="rTable" >
                         <div class="rTableRow devices" v-for="device in devices">
                             <div class="rTableCell line">
@@ -47,9 +96,9 @@
                                 <b>{{device.name}}</b>
                                 <div class="slider" v-if="device.capabilitiesObj.target_temperature">
                                     <input v-bind:id="'range_'+device.id"
-                                           type="range" 
-                                           v-bind:min="device.capabilitiesObj.target_temperature.min" 
-                                           v-bind:max="device.capabilitiesObj.target_temperature.max || 40" 
+                                           type="range"
+                                           v-bind:min="device.capabilitiesObj.target_temperature.min"
+                                           v-bind:max="device.capabilitiesObj.target_temperature.max || 40"
                                            v-bind:step="device.capabilitiesObj.target_temperature.step || 0.1"
                                            v-bind:value="device.capabilitiesObj.target_temperature.value" v-bind:data-id="device.id" />
                                 </div>
@@ -64,7 +113,9 @@
                         </div>
                     </div>
                 </div>
+            </div>-->
             </div>
+
 
             <div id="tab2" class="panel" style="display: none;">
                 Log...
@@ -72,7 +123,7 @@
 
 
         </div>
-        
+
     </div>
 </body>
 </html>

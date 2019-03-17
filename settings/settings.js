@@ -1,120 +1,54 @@
+const REFRESH_INTERVAL = 2000; // 2 sec.
+
 var language = 'en';
 var loading = true;
 var temperatureSettings = {};
+var refreshInterval;
+var updateValuesTimeout;
 
 const defaultSettings = {
 };
 
+const DEFAULT_ZONE = {
+    id: 'default',
+    name: ''
+};
+
 //////////////////////////  DEBUG  //////////////////////////////////////
-//const testDevices = {
-//    test: {
-//        id: 'test', name: "test some long named device lkfjdh sdlkfjhgsldkfhg lksdjfhslkdh ", zone: "zone", iconObj: {
-//            url: "../assets/icon.svg"
-//        },
-//        capabilitiesObj: {
-//            measure_temperature: {
-//                value: 18.5,
-//                setable: false
-//            },
-//            target_temperature: {
-//                value: 21.3,
-//                setable: true,
-//                min: 4,
-//                max: 35,
-//                step: 0.5,
-//                units: 'C'
-//            }
-//        }
-//    },
-//    test1: {
-//        id: 'test1', name: "device 1", zone: "zone 2", iconObj: {
-//            url: "../assets/icon.svg"
-//        },
-//        capabilitiesObj: {
-//            measure_temperature: {
-//                value: 77,
-//                setable: false,
-//                units: 'F'
-//            },
-//            target_temperature: {
-//                value: 55,
-//                setable: true,
-//                min: -10,
-//                max: 90,
-//                step: 1,
-//                units: 'F'
-//            }
-//        }
-//    },
-//    test2: {
-//        id: 'test2', name: "device 2", zone: "zone 2", iconObj: {
-//            url: "../assets/icon.svg"
-//        },
-//        capabilitiesObj: {
-//            measure_temperature: {
-//                value: 21.5,
-//                setable: false
-//            }
-//        }
-//    },
-//    test3: { id: 'test', name: "device 3", zone: "zone" },
-//    test4: { id: 'test', name: "device 4", zone: "zone" },
-//    test5: { id: 'test', name: "device 5", zone: "zone" },
-//    test6: { id: 'test', name: "device 6", zone: "zone" },
-//    test7: { id: 'test', name: "device 7", zone: "zone" },
-//    test8: { id: 'test', name: "device 8", zone: "zone" },
-//    test9: { id: 'test', name: "device 9", zone: "zone" },
-//    test10: { id: 'test', name: "device 10", zone: "zone" }
-//};
-//$(document).ready(function () {
-//    onHomeyReady({
-//        ready: () => { },
-//        get: (_, callback) => callback(null, defaultSettings),
-//        api: (method, url, _, callback) => {
-//            switch (url) {
-//                case '/devices':
-//                    return setTimeout(() => callback(null, testDevices), 1000);
-//                case '/zones':
-//                    return callback(null, { zone: { name: 'zone' } });
-//                default:
-//                    return callback(null, {});
-//            }
-//        },
-//        getLanguage: () => 'en',
-//        set: () => 'settings saved',
-//        alert: () => alert(...arguments)
-//    })
-//});
+if (!window.Homey) {
+    $(document).ready(function () {
+        onHomeyReady({
+            ready: () => { },
+            get: (_, callback) => callback(null, defaultSettings),
+            api: (method, url, _, callback) => {
+                switch (url) {
+                    case '/devices':
+                        return setTimeout(() => callback(null, testDevices), 100);
+                    case '/zones':
+                        return setTimeout(() => callback(null, testZones), 100);
+                    default:
+                        return callback(null, {});
+                }
+            },
+            getLanguage: () => 'en',
+            set: () => 'settings saved',
+            alert: () => alert(...arguments)
+        })
+    });
+}
 ////////////////////////////////////////////////////////////////
+
+
+function sortByName(a, b) {
+    let name1 = a.name.trim().toLowerCase();
+    let name2 = b.name.trim().toLowerCase();
+    return name1 < name2 ? -1 : name1 > name2 ? 1 : 0;
+}
 
 function onHomeyReady(homeyReady){
     Homey = homeyReady;
     
     temperatureSettings = defaultSettings;
-    
-    //Homey.get('settings', function (err, savedSettings) {
-            
-    //    if (err) {
-    //        Homey.alert(err);
-    //    } else if (savedSettings) {
-    //        temperatureSettings = savedSettings;
-    //    }
-            
-    //    for (let key in defaultSettings) {
-    //        if (defaultSettings.hasOwnProperty(key)) {
-    //            const el = document.getElementById(key);
-    //            if (el) {
-    //                switch (typeof defaultSettings[key]) {
-    //                    case 'boolean':
-    //                        el.checked = temperatureSettings[key];
-    //                        break;
-    //                    default:
-    //                        el.value = temperatureSettings[key];
-    //                }
-    //            }
-    //        }
-    //    }
-    //});
         
     //showTab(1);
     getLanguage();
@@ -122,36 +56,110 @@ function onHomeyReady(homeyReady){
     $app = new Vue({
         el: '#app',
         data: {
+            search: '',
+            allDevices: null,
             devices: null,
-            zones: {}
+            zones: null,
+            zonesList: []
         },
         methods: {
+            hasName(entity, name) {
+                return entity && name && (entity.name || '').toLowerCase().indexOf(name) !== -1;
+            },
+            clearFilter() {
+                $('#search').val('');
+                this.search = '';
+                this.filter();
+            },
+            applyFilter(devices) {
+                if (!devices) return [];
+                if (!this.search) return devices;
+                return devices.filter(d => this.hasName(d, this.search) || this.hasName(this.zones[d.zone], this.search));
+            },
+            filter() {
+                if (this.allDevices) {
+                    this.search = ($('#search').val() || '').toLowerCase();
+                    this.devices = this.applyFilter(this.allDevices);
+                    this.updateZonesList();
+                    setTimeout(() => {
+                        this.updateValues(this.devices);
+                        this.updateSliders();
+                    });
+                }
+            },
             getZones() {
                 return Homey.api('GET', '/zones', null, (err, result) => {
                     if (err) return Homey.alert(err);
-                    //if (err) {
-                    //    setTimeout(() => this.getZones(), 1000);
-                    //    return;
-                    //}
-                    this.zones = result;
+
+                    this.zones = result || {};
+                    this.updateZonesList();
                 });
             },
-            getDevices() {
-                return Homey.api('GET', '/devices', null, (err, result) => {
-                    loading = false;
-                    if (err) return Homey.alert(err);
-                    //if (err) {
-                    //    setTimeout(this.getDevices(), 1000);
-                    //    return;
-                    //}
-                    this.devices = result
-                        ? Object.keys(result).map(key => result[key]).filter(d => d && d.capabilitiesObj && d.capabilitiesObj.measure_temperature)
-                        : [];
+            updateZonesList() {
+                const zones = this.zones || {};
+                this.zonesList = Object.keys(zones)
+                    .filter(key => zones.hasOwnProperty(key))
+                    .map(key => zones[key])
+                    .filter(z => this.getDevicesForZone(z.id).length);
+                this.zonesList.sort(sortByName);
 
-                    document.getElementById('devices-list').style.display = 'block';
-                    
-                    this.$nextTick(() => this.updateSliders());
+                if (this.getDevicesForZone(DEFAULT_ZONE.id).length) {
+                    this.zonesList.unshift(DEFAULT_ZONE);
+                }
+            },
+            getDevices() {
+                let interval = refreshInterval;
+                return Homey.api('GET', '/devices', null, (err, result) => {
+                    try {
+                        loading = false;
+                        if (err) return Homey.alert(err);
+
+                        const devices = Object.keys(result || {})
+                            .map(key => result[key])
+                            .filter(d => d && d.capabilitiesObj && d.capabilitiesObj.measure_temperature);
+
+                        devices.sort(sortByName);
+                        devices.filter(d => !d.zone).forEach(d => d.zone = DEFAULT_ZONE.id);
+
+                        if (!this.allDevices) {
+                            this.allDevices = devices;
+                            this.filter();
+                            document.getElementById('devices-list').style.display = 'block';
+                        }
+
+                        if (interval === refreshInterval) { // NOTE: Skip when interval is cleared or another update is triggered
+                            updateValuesTimeout = setTimeout(() => this.updateValues(devices));
+                        }
+
+                    } catch (e) {
+                        // nothing
+                    }
+
                 });
+            },
+            updateValues(devices) {
+                devices = this.applyFilter(devices);
+
+                for (let device of devices) {
+                    try {
+                        if (device.capabilitiesObj) {
+
+                            if (device.capabilitiesObj.hasOwnProperty('measure_temperature')) {
+                                const value = this.getTemperature(device.capabilitiesObj.measure_temperature);
+                                $('#measure_' + device.id).html(value);
+                            }
+                            if (device.capabilitiesObj.hasOwnProperty('target_temperature')) {
+                                const value = Number(device.capabilitiesObj.target_temperature.value);
+                                $('#range_' + device.id).val(value).change();
+
+                                const display = this.getTemperature(device.capabilitiesObj.target_temperature);
+                                $('#target_' + device.id).html(display);
+                            }
+                        }
+                    } catch (e) {
+                        // nothing
+                    }
+                }
             },
             getZone: function (device) {
                 const zoneId = typeof device.zone === 'object' ? device.zone.id : device.zone;
@@ -214,14 +222,32 @@ function onHomeyReady(homeyReady){
                         }
                     }
                 });
+            },
+            clearRefreshInterval() {
+                if (updateValuesTimeout) {
+                    clearTimeout(updateValuesTimeout);
+                    updateValuesTimeout = undefined;
+                }
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = undefined;
+                }
+            },
+            setRefreshInterval() {
+                this.clearRefreshInterval();
+                refreshInterval = setInterval(() => this.getDevices(), REFRESH_INTERVAL);
+            },
+            getDevicesForZone(zoneId) {
+                return this.devices ? this.devices.filter(d => d.zone === zoneId) : [];
             }
         },
         async mounted() {
+            $('.app-header').show();
+
             await this.getZones();
             await this.getDevices();
 
-            // update every xx seconds
-            setInterval(() => this.getDevices(), 5000);
+            this.setRefreshInterval();
         },
         computed: {
             devices() {
