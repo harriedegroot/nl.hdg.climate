@@ -11,7 +11,7 @@ const defaultSettings = {
 
 const DEFAULT_ZONE = {
     id: 'default',
-    name: ''
+    name: 'Homey'
 };
 
 //////////////////////////  DEBUG  //////////////////////////////////////
