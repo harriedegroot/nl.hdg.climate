@@ -12,6 +12,12 @@ It's Homey 2.0 only...
 
 ## Change Log  
   
+#### 2.0.2  
+- Added search  
+- Grouped devices by zone/room
+- Ordered devices & zones by name
+- Improved live updates  
+  
 #### 2.0.1  
 - Set target value  
 - Live updates  
