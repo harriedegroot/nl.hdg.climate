@@ -4,12 +4,11 @@ With this app you can monitor the temperature readings of all your devices.
 
 ## Functionality
 
-Just adds an app settings page with all devices and their temperature readings.
-
-## Homey firmware v1.5 and v2
-
-It's Homey 2.0 only...
-
+Just adds an app settings page with all devices and their temperature readings:
+- Adjust target temperature
+- Calculates mean room temperature
+- Search/filter devices
+  
 ## Change Log  
   
 #### 2.0.4  
@@ -41,5 +40,6 @@ Do you like this app? Consider a donation to support development.
  
 [![Donate][pp-donate-image]][pp-donate-link]
 
-[pp-donate-link]: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=harriedegroot%40gmail%2ecom&lc=NL&item_name=Harrie%20de%20Groot&item_number=Homey%20Temperature%20Monitor&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
+[pp-donate-link]: https://www.paypal.me/harriedegroot
 [pp-donate-image]: https://img.shields.io/badge/Donate-PayPal-green.svg
+
