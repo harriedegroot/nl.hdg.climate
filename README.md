@@ -11,6 +11,10 @@ Just adds an app settings page with all devices and their temperature readings:
   
 ## Change Log  
   
+#### 2.0.5  
+- small styling fix
+- updated readme
+   
 #### 2.0.4  
 - Added custom device temperatures  
   
