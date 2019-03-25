@@ -8,8 +8,15 @@ Just adds an app settings page with all devices and their temperature readings:
 - Adjust target temperature
 - Calculates mean room temperature
 - Search/filter devices
+- Show/hide devices
   
 ## Change Log  
+  
+#### 2.0.6
+- Added config to show/hide devices
+- Added German translation
+- BUG fix in error handling of api calls
+- Athom api upgrade (2.1.178)
   
 #### 2.0.5  
 - small styling fix
