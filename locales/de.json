@@ -1,0 +1,15 @@
+{
+  "tab1": {
+    "title": "Geräte",
+    "search": "Suche..",
+    "configInfo": "Geräte zum Ausblenden auswählen",
+    "devices": {
+      "devices": "Geräte",
+      "zone": "Bereich",
+      "device": "Gerät"
+    }
+  },
+  "tab2": {
+    "title": "Log"
+  }
+}

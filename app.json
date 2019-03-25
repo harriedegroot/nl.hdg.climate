@@ -5,16 +5,18 @@
   "sdk": 2,
   "name": {
     "en": "Temperature monitor",
-    "nl": "Temperatuur monitor"
+    "nl": "Temperatuur monitor",
+    "de": "Temperaturüberwachung"
   },
   "description": {
     "en": "Keep track of the temperature readings of your devices",
-    "nl": "Houd de temperatuurmetingen van al je apparaten in de gaten"
+    "nl": "Houd de temperatuurmetingen van al je apparaten in de gaten",
+    "de": "Behalten Sie die Temperaturwerte Ihrer Geräte im Auge"
   },
   "category": [
     "tools"
   ],
-  "permissions": [ "homey:manager:api"],
+  "permissions": [ "homey:manager:api" ],
   "images": {
     "large": "/assets/images/large.jpg",
     "small": "/assets/images/small.jpg"
