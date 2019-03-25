@@ -1,12 +1,8 @@
 {
-  "settings": {
-    "benefit": "Bekijk de temperatuurmetingen van al je apparaten"
-  },
-  "devices": {
-    "flowcard": "Flowcard"
-  },
   "tab1": {
     "title": "Apparaten",
+    "search": "Zoek..",
+    "configInfo": "Selecteer apparaten om te verbergen",
     "devices": {
       "devices": "Apparaten",
       "zone": "Zone",

@@ -1,12 +1,8 @@
 {
-  "settings": {
-    "benefit": "Monitor the temperature readings of all your devices"
-  },
-  "devices": {
-    "flowcard": "Flowcard"
-  },
   "tab1": {
     "title": "Devices",
+    "search": "Search..",
+    "configInfo": "Select devices to hide",
     "devices": {
       "devices": "Devices",
       "zone": "Zone",

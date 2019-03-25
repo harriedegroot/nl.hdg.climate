@@ -64,7 +64,10 @@ function onHomeyReady(homeyReady){
     Homey = homeyReady;
     
     temperatureSettings = defaultSettings;
-        
+    if (!temperatureSettings.devices) {
+        temperatureSettings.devices = {};
+    }
+    
     //showTab(1);
     getLanguage();
 
@@ -75,7 +78,8 @@ function onHomeyReady(homeyReady){
             allDevices: null,
             devices: null,
             zones: null,
-            zonesList: []
+            zonesList: [],
+            config: false
         },
         methods: {
             hasName(entity, name) {
@@ -279,12 +283,34 @@ function onHomeyReady(homeyReady){
                 refreshInterval = setInterval(() => this.getDevices(), REFRESH_INTERVAL);
             },
             getDevicesForZone(zoneId) {
-                return this.devices ? this.devices.filter(d => d.zone === zoneId) : [];
+                const devices = this.devices ? this.devices.filter(d => d.zone === zoneId) : [];
+                return this.config ? devices : devices.filter(d => temperatureSettings.devices[d.id] !== false);
             },
             getAdditionalTemperatures(device) {
                 return Object.keys(device.capabilitiesObj)
                     .filter(key => key.indexOf('measure_temperature.') === 0)
                     .map(key => device.capabilitiesObj[key]);
+            },
+            toggleConfig() {
+                this.config = !this.config;
+                this.updateZonesList();
+                this.redraw();
+            },
+            toggleDevice(deviceId) {
+
+                // toggle
+                temperatureSettings.devices[deviceId] = temperatureSettings.devices.hasOwnProperty(deviceId)
+                    ? !temperatureSettings.devices[deviceId]
+                    : false;
+
+                saveSettings();
+                this.redraw();
+            },
+            redraw() {
+                setTimeout(() => {
+                    $app.$forceUpdate();
+                    this.updateSliders();
+                }, 0);
             }
         },
         async mounted() {
@@ -306,6 +332,18 @@ function onHomeyReady(homeyReady){
         //updated: function () {
         //    updateSliders();
         //}
+    });
+
+    Homey.get('settings', function (err, savedSettings) {
+        if (err) {
+            Homey.alert(err);
+        } else if (savedSettings) {
+            Object.assign(temperatureSettings, savedSettings);
+            if (!temperatureSettings.devices) {
+                temperatureSettings.devices = {};
+            }
+        }
+        $app.updateZonesList();
     });
 }
 
@@ -342,18 +380,18 @@ function getLanguage() {
 
 function saveSettings() {
 
-    for (let key in defaultSettings) {
-        let el = document.getElementById(key);
-        if (el) {
-            temperatureSettings[key] = typeof defaultSettings[key] === 'boolean' ? el.checked : el.value;
-        }
-    }
-    _writeSettings();
+    //for (let key in defaultSettings) {
+    //    let el = document.getElementById(key);
+    //    if (el) {
+    //        temperatureSettings[key] = typeof defaultSettings[key] === 'boolean' ? el.checked : el.value;
+    //    }
+    //}
+    _writeSettings(temperatureSettings);
 }
 
 function _writeSettings(settings) {
     try {
-        Homey.set('settings', temperatureSettings);
+        Homey.set('settings', settings);
         Homey.api('GET', '/settings_changed', null, (err, result) => { });
     } catch (e) {
         Homey.alert('Failed to save settings: ' + e);

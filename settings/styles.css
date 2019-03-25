@@ -749,3 +749,62 @@ a:active {
 .additional-temp {
     font-size: 15px;
 }
+
+
+.app-header p {
+    margin: 10px;
+    color: rgb(109,109,113);
+    font-size: 18px;
+}
+
+#search, #search:focus {
+    width: 90% !important;
+    font-size: 16px;
+    border: none;
+    margin-bottom: 5px;
+    outline: none;
+}
+
+#clear-search {
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    position: absolute;
+    right: 10px;
+    top: 8px;
+}
+
+#clear-search-icon {
+    fill: rgb(109,109,113);
+}
+
+#config-btn {
+    width: 26px;
+    height: 26px;
+    position: absolute;
+    right: 8px;
+    top: 6px;
+    padding: 2px;
+    cursor: pointer;
+    fill: rgb(109,109,113);
+    border-radius: 4px;
+}
+
+#config-btn .cog-icon {
+    width: 26px;
+    height: 26px;
+}
+
+#config-btn.active {
+    background: rgb(109,109,113);
+    fill: white;
+}
+
+.selectable {
+    cursor: pointer;
+}
+
+.disabled {
+    background: rgba(0,0,0,0.08);
+    text-decoration: line-through;
+}
