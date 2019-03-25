@@ -55,7 +55,7 @@ module.exports = [
             if (Homey && Homey.app) {
                 let result = Homey.app.settingsChanged();
                 if (result instanceof Error) callback(result);
-                callback(null, result);
+                else callback(null, result);
             } else {
                 callback('App not ready, please try again');
             }
@@ -71,7 +71,7 @@ module.exports = [
             if (Homey && Homey.app) {
                 let result = Log.getLogLines();
                 if (result instanceof Error) callback(result);
-                callback(null, result);
+                else callback(null, result);
             } else {
                 callback(null, []);
             }
