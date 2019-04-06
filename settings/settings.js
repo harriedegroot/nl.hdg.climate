@@ -297,14 +297,15 @@ function onHomeyReady(homeyReady){
                 this.redraw();
             },
             toggleDevice(deviceId) {
+                if (this.config) {
+                    // toggle
+                    temperatureSettings.devices[deviceId] = temperatureSettings.devices.hasOwnProperty(deviceId)
+                        ? !temperatureSettings.devices[deviceId]
+                        : false;
 
-                // toggle
-                temperatureSettings.devices[deviceId] = temperatureSettings.devices.hasOwnProperty(deviceId)
-                    ? !temperatureSettings.devices[deviceId]
-                    : false;
-
-                saveSettings();
-                this.redraw();
+                    saveSettings();
+                    this.redraw();
+                }
             },
             redraw() {
                 setTimeout(() => {
