@@ -12,6 +12,10 @@ Just adds an app settings page with all devices and their temperature readings:
   
 ## Change Log  
   
+#### 2.0.7
+- Fixed the hiding of devices when not in config mode
+- Resolved an issue where moving sliders resulted in selecting text on iOS devices
+  
 #### 2.0.6
 - Added config to show/hide devices
 - Added German translation
