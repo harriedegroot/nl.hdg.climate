@@ -71,7 +71,7 @@
                                 <div class="icon-cell" v-html="getIcon(device)"></div>
                             </div>
                             <div class="rTableCell line scrollable-text">
-                                <b>{{device.name}}</b>
+                                <span class="unselectable device-name">{{device.name}}</span>
                                 <div class="slider" v-if="!config && device.capabilitiesObj.target_temperature">
                                     <input v-bind:id="'range_'+device.id"
                                            type="range"
